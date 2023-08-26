@@ -1,12 +1,8 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: batch/v1
+kind: Job
 metadata:
   name: seed
 spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: seed
   template:
     metadata:
       labels:
@@ -15,3 +11,4 @@ spec:
       containers:
       - name: seed
         image: seed-pg
+      restartPolicy: OnFailure
