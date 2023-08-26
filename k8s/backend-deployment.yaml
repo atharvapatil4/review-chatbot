@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: core-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: core-server 
+  template:
+    metadata:
+      labels:
+        app: core-server
+    spec:
+      containers:
+      - name: core-server
+        image: core-server:latest
+        env:
+        - name: "PORT"
+          value: "8080"
+        - name: "PG_URL"
+          value: "postgres-service"
+        - name: "PG_PORT"
+          value: "5432"
