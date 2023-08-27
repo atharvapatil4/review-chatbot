@@ -2,6 +2,8 @@ import psycopg2
 from psycopg2 import sql
 import uuid
 import hashlib
+import os
+import random
 
 # Util functions
 def hash_password(password, salt):
@@ -70,7 +72,8 @@ def create_tables(conn, cur):
     print("Finished creating tables ")
 
 def populate_tables(conn, cur):
-    # Populate reaction table
+
+    # POPULATE PROMPTS TABLE
     prompts_data = [
         ('thumbs_up', 'We\'re happy to hear you had a positive experience! Please leave us a quick review so we can keep doing what we do.'),
         ('thumbs_down', 'We\'re sorry to hear things didnt work out. Please leave us a quick review so we know what to improve.')
@@ -90,10 +93,10 @@ def populate_tables(conn, cur):
         print("Error:", e)
 
 
-    # populate users table
+    # POPULATE USERS TABLE
     superuser_name = "admin"
-    password = "pass"  # Change this to your superuser's password
-    specific_salt = "SPECIALSALT10"  # This is the specific 10 character salt
+    password = "pass"  
+    specific_salt = "SALTSALT10"  # This is the special salt for super user
 
     hashed_pwd = hash_password(password, specific_salt)
     try:
@@ -108,7 +111,29 @@ def populate_tables(conn, cur):
         print("Error in users :", e)
         conn.rollback()
 
-    # 
+    # POPULATE PRODUCTS TABLE
+    for filename in os.listdir('assets'):
+        # Ensure we're only dealing with images (based on extension)
+        if filename.lower().endswith(('.png', '.jpg', '.jpeg', '.gif')):
+            product_id = str(uuid.uuid4()) # Generate UUID
+            name = os.path.splitext(filename)[0]  # Extract name without extension
+            image_url = os.path.abspath(os.path.join('assets', filename))
+            description = name
+            cost = round(random.uniform(1.0, 500.0), 2)  # Generate random float between 1.0 and 500.0 for price
+            
+            insert_command = """
+            INSERT INTO products (product_id, product_name, product_image_url, product_description, product_cost)
+            VALUES (%s, %s, %s, %s, %s);
+            """
+            try:            
+                cur.execute(insert_command, (product_id, name, image_url, description, cost))
+                print(f"Inserted {name} with path {image_url} into products table.")
+            except psycopg2.Error as e:
+                print("Error in products :", e)
+                conn.rollback()
+
+    conn.commit()
+
 
 
 # Update these values accordingly
