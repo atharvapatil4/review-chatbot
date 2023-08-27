@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
-function ChatBot({user_id, reaction, product_id}) {
+function ChatBot({user_id, reaction, product_id, onCloseChat}) {
     const [chatLog, setChatLog] = useState([]);
     const [inputValue, setInputValue] = useState(''); // State to control prompt
     const [showChat, setShowChat] = useState(true);  // State to control chat visibility
@@ -66,7 +66,8 @@ function ChatBot({user_id, reaction, product_id}) {
         
         // Close the chat window after 3500 seconds
         setTimeout(() => {
-            setShowChat(false);
+            //setShowChat(false);
+            onCloseChat();
         }, 3500);
     })
     .catch(error => {
