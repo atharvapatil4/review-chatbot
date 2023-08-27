@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "babel": "^6.23.0"
+  },
+  "devDependencies": {
+    "tailwindcss-font-inter": "^3.0.1"
+  }
+}

@@ -124,7 +124,7 @@ func handleCreateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response := UserLoginResponse{Status: "success", Error: ""}
+	response := UserLoginResponse{Status: "success", Error: "", UserID: userID}
 	json.NewEncoder(w).Encode(response)
 }
 

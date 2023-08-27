@@ -33,5 +33,6 @@ type UserLoginRequest struct {
 
 type UserLoginResponse struct {
 	Status string `json:"status"`
+	UserID string `json:"user_id,omitempty"`
 	Error  string `json:"error,omitempty"`
 }
