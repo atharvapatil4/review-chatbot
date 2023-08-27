@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/gorilla/handlers"
@@ -135,6 +136,11 @@ func handleBuy(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, "Bought product!")
 }
 
+// Gets all products from the database, returned as a list
+func getAllProducts(w http.ResponseWriter, r *http.Request) {
+
+}
+
 // Handles a prompt reaction. Returns appropriate prompt from PROMPTS table
 func selectPrompt(w http.ResponseWriter, r *http.Request) {
 	var requestPayload ReactionRequest
@@ -161,6 +167,7 @@ func selectPrompt(w http.ResponseWriter, r *http.Request) {
 
 // Receives a text review from a user, and writes it to the REVIEWS table in the db
 func writeReview(w http.ResponseWriter, r *http.Request) {
+	log.Println("Review request received", r.Body)
 	var review Review
 
 	if err := json.NewDecoder(r.Body).Decode(&review); err != nil {
@@ -175,6 +182,10 @@ func writeReview(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Failed to store review", http.StatusInternalServerError)
 		return
 	}
+
+	// Fix current time. JS is wrong for some reason
+	currentTime := time.Now()
+	review.ReviewDate = currentTime
 
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string]string{
