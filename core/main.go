@@ -54,8 +54,8 @@ func handleLogin(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Fetch salt and hashed password for the user
-	var salt, storedHashedPassword string
-	err := db.QueryRow("SELECT salt, hashed_password FROM users WHERE username=$1", loginRequest.Username).Scan(&salt, &storedHashedPassword)
+	var uuid, salt, storedHashedPassword string
+	err := db.QueryRow("SELECT user_id, salt, hashed_password FROM users WHERE username=$1", loginRequest.Username).Scan(&uuid, &salt, &storedHashedPassword)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		response := UserLoginResponse{Status: "failure", Error: "Database error, username does not exist"}
@@ -76,7 +76,7 @@ func handleLogin(w http.ResponseWriter, r *http.Request) {
 
 	// If you reach here, the login is successful
 	w.WriteHeader(http.StatusOK)
-	response := UserLoginResponse{Status: "success"}
+	response := UserLoginResponse{Status: "success", UserID: uuid}
 	json.NewEncoder(w).Encode(response)
 }
 
