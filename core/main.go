@@ -8,6 +8,7 @@ import (
 	"net/http"
 
 	"github.com/google/uuid"
+	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	_ "github.com/lib/pq" // Import the PostgreSQL driver
 )
@@ -41,6 +42,7 @@ func initDB() {
 
 // ******* LOGIN/AUTH HANDLERS ****************//
 func handleLogin(w http.ResponseWriter, r *http.Request) {
+	log.Println("Received request")
 	var loginRequest UserLoginRequest
 
 	// Parse the request body
@@ -152,6 +154,7 @@ func selectPrompt(w http.ResponseWriter, r *http.Request) {
 	responsePayload := ReactionResponse{
 		Prompt: promptMessage,
 	}
+
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(responsePayload)
 }
@@ -202,9 +205,15 @@ func main() {
 	r.HandleFunc("/writereview", writeReview).Methods("POST")
 	r.HandleFunc("/selectprompt", selectPrompt).Methods("POST")
 
+	// Set CORS settings
+
+	corsOrigins := handlers.AllowedOrigins([]string{"*"})
+	corsMethods := handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE"})
+	corsHeaders := handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"})
+
 	// Launch Server
 	log.Println("Server coming up on port", PORT)
-	err := http.ListenAndServe(fmt.Sprintf("localhost:%s", PORT), r)
+	err := http.ListenAndServe(fmt.Sprintf("localhost:%s", PORT), handlers.CORS(corsOrigins, corsMethods, corsHeaders)(r))
 	if err != nil {
 		log.Fatalln("Error starting the server", err)
 	}
