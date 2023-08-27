@@ -3,10 +3,11 @@ package main
 import "time"
 
 type Product struct {
-	ProductID          int    `json:"product_id"`
-	ProductName        string `json:"product_name"`
-	ProductImageURL    string `json:"product_image_url"`
-	ProductDescription string `json:"product_description"`
+	ProductID          string  `json:"product_id"`
+	ProductName        string  `json:"product_name"`
+	ProductImageURL    string  `json:"product_image_url"`
+	ProductDescription string  `json:"product_description"`
+	ProductCost        float64 `json:"product_cost"`
 }
 
 type ReactionRequest struct {

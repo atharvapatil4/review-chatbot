@@ -138,7 +138,39 @@ func handleBuy(w http.ResponseWriter, r *http.Request) {
 
 // Gets all products from the database, returned as a list
 func getAllProducts(w http.ResponseWriter, r *http.Request) {
+	log.Println("received request to get all products")
+	// Query the database to retrieve all products
+	rows, err := db.Query("SELECT product_id, product_name, product_image_url, product_description, product_cost FROM products")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer rows.Close()
 
+	var products []Product
+
+	// Iterate through the query results and populate the products slice
+	for rows.Next() {
+		var p Product
+		err := rows.Scan(&p.ProductID, &p.ProductName, &p.ProductImageURL, &p.ProductDescription, &p.ProductCost)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		products = append(products, p)
+	}
+
+	// Convert products slice to JSON
+	jsonData, err := json.Marshal(products)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	log.Println("finished request to get all products", products)
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(jsonData)
 }
 
 // Handles a prompt reaction. Returns appropriate prompt from PROMPTS table
@@ -208,10 +240,11 @@ func main() {
 	// Set up routing
 	r := mux.NewRouter()
 	r.HandleFunc("/health", healthCheck).Methods("GET")
+	r.HandleFunc("/getproducts", getAllProducts).Methods("GET")
 
 	r.HandleFunc("/login", handleLogin).Methods("POST")
 	r.HandleFunc("/buy", handleBuy).Methods("POST")
-	r.HandleFunc("/createUser", handleCreateUser).Methods("POST")
+	r.HandleFunc("/createuser", handleCreateUser).Methods("POST")
 
 	r.HandleFunc("/writereview", writeReview).Methods("POST")
 	r.HandleFunc("/selectprompt", selectPrompt).Methods("POST")
