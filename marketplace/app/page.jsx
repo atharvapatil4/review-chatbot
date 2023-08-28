@@ -28,9 +28,16 @@ const Home = () => {
     }
   }, [charIndex, targetText]);
 
+  function createBackendURL(route) {
+    const backendURL = process.env.BACKEND_URL || "http://localhost:8080";
+    return `${backendURL}/${route}`;
+  }
+  const loginRoute = "login";
+  const loginUrl = createBackendURL(loginRoute);
+
   const loginUser = async () => {
     try {
-        const response = await fetch('http://localhost:8080/login', {
+        const response = await fetch(loginUrl, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

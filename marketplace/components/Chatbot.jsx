@@ -7,8 +7,15 @@ function ChatBot({user_id, reaction, product_id, onCloseChat}) {
     const [inputValue, setInputValue] = useState(''); // State to control prompt
     const [showChat, setShowChat] = useState(true);  // State to control chat visibility
 
+    function createBackendURL(route) {
+      const backendURL = process.env.BACKEND_URL || "http://localhost:8080";
+      return `${backendURL}/${route}`;
+    }
+    const selectPromptRoute = "selectprompt";
+    const selectPromptUrl = createBackendURL(selectPromptRoute) ;
+
     useEffect(() => {
-        fetch(`http://localhost:8080/selectprompt`, {
+        fetch(selectPromptUrl, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -35,6 +42,10 @@ function ChatBot({user_id, reaction, product_id, onCloseChat}) {
     setInputValue(e.target.value);
   };
 
+
+  const writeReviewRoute = "writereview";
+    const writeReviewUrl = createBackendURL(writeReviewRoute);
+
   const handleSend = () => {
     const userMessage = { sender: 'user', message: inputValue };
     setChatLog(prevChatLog => [...prevChatLog, userMessage]);
@@ -42,7 +53,7 @@ function ChatBot({user_id, reaction, product_id, onCloseChat}) {
     const timestamp = new Date().toISOString();
 
     // Make an API call
-    fetch(`http://localhost:8080/writereview`, {
+    fetch(writeReviewUrl, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'

@@ -93,9 +93,15 @@ const Products = () => {
     const params = new URLSearchParams(window.location.search);
     setUserUUID(params.get('userUUID'));
   }, []);
+  function createBackendURL(route) {
+    const backendURL = process.env.BACKEND_URL || "http://localhost:8080";
+    return `${backendURL}/${route}`;
+  }
+  const getProductsRoute = "getproducts";
+  const getProductsUrl = createBackendURL(getProductsRoute);
 
   useEffect(() => {
-    fetch('http://localhost:8080/getproducts')
+    fetch(getProductsUrl)
       .then(response => response.json())
       .then(data => setProducts(data))
       .catch(error => console.error("Error fetching products:", error));
@@ -112,10 +118,12 @@ const Products = () => {
 
       // Clean up the timeout when unmounting or re-rendering
       return () => clearTimeout(timerId);
+
     }
   }, [charIndex, targetText]);
 
   const handleChatClose = () => {
+
     setShowChat(false);
   };
 

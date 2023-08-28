@@ -28,7 +28,7 @@ def create_tables(conn, cur):
         """
         CREATE TABLE products (
             product_id UUID PRIMARY KEY,
-            product_name VARCHAR(255) NOT NULL,
+            product_name VARCHAR(255) NOT NULL UNIQUE,
             product_image_url VARCHAR(1024),
             product_description TEXT,
             product_cost FLOAT(10)
@@ -123,7 +123,8 @@ def populate_tables(conn, cur):
             
             insert_command = """
             INSERT INTO products (product_id, product_name, product_image_url, product_description, product_cost)
-            VALUES (%s, %s, %s, %s, %s);
+            VALUES (%s, %s, %s, %s, %s)
+            ON CONFLICT (product_name) DO NOTHING;
             """
             try:            
                 cur.execute(insert_command, (product_id, name, image_url, description, cost))

@@ -1,6 +1,3 @@
-
-# Watch for changes in assets directory
-watch_file('assets')
 # Build docker images
 docker_build(dockerfile='core/Dockerfile', ref='core-server', context='./core/')
 docker_build(dockerfile='db/Dockerfile', ref='seed-pg', context='./')
