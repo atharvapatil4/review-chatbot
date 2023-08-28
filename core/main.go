@@ -207,6 +207,10 @@ func writeReview(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Fix JS time error
+	currentTime := time.Now()
+	review.ReviewDate = currentTime
+
 	_, err := db.Exec("INSERT INTO reviews (user_id, product_id, review_description, review_date) VALUES ($1, $2, $3, $4)",
 		review.UserID, review.ProductID, review.ReviewDescription, review.ReviewDate)
 
@@ -214,10 +218,6 @@ func writeReview(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Failed to store review", http.StatusInternalServerError)
 		return
 	}
-
-	// Fix current time. JS is wrong for some reason
-	currentTime := time.Now()
-	review.ReviewDate = currentTime
 
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string]string{
