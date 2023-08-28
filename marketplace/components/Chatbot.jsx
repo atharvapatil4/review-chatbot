@@ -1,6 +1,5 @@
 
 import { useState, useEffect } from 'react';
-import axios from 'axios';
 
 function ChatBot({user_id, reaction, product_id, onCloseChat}) {
     const [chatLog, setChatLog] = useState([]);

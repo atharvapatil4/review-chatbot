@@ -1,7 +1,7 @@
 'use client'
 import React from 'react'
 import { useState, useEffect } from 'react';
-import ChatBot from '@components/ChatBot';
+import ChatBot from '@components/Chatbot';
 
 function ReactionModal({ show, onReactionSelected, productId }) {
   if (!show) return null;
