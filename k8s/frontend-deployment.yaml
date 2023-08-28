@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: my-frontend
+  name: next-js-frontend
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: my-frontend
+      app: next-js-frontend
   template:
     metadata:
       labels:
-        app: my-frontend
+        app: next-js-frontend
     spec:
       containers:
       - name: next-js-frontend

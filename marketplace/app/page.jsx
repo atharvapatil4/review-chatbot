@@ -35,7 +35,8 @@ const Home = () => {
   const loginRoute = "login";
   const loginUrl = createBackendURL(loginRoute);
 
-  const loginUser = async () => {
+  const loginUser = async (event) => {
+    event.preventDefault();
     try {
         const response = await fetch(loginUrl, {
             method: 'POST',
@@ -59,16 +60,41 @@ const Home = () => {
         } else {
             setMessage(data.error || "Failed to log in");  // Assuming "error" is the key for error message in response.
         }
-    } catch (error) {
-        setMessage("An unexpected error occurred. Please try again later.");
-    }
+      } catch (error) {
+          setMessage("An unexpected error occurred. Please try again later.");
+      }
     };
 
-    const signupUser = async () => {
-    // Implement sign up logic here.
-    // On successful sign-up, you can log the user in or show a success message.
-    // On failure, display the error message:
-    // setMessage("Failed to sign up");
+    const createRoute = "createuser";
+    const createUrl = createBackendURL(createRoute);
+    const signupUser = async (event) => {
+      event.preventDefault();
+      try {
+          const response = await fetch(createUrl, {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                  username: username,
+                  password: password
+              })
+          });
+
+          const data = await response.json();
+          console.log(data)
+
+          if (response.ok) {
+              const userUUID = data.user_id;
+              console.log(data, data.user_id)
+              window.location.href = `/products?userUUID=${userUUID}`; // Navigating using the window object
+              
+          } else {
+              setMessage(data.error || "Failed to log in");  // Assuming "error" is the key for error message in response.
+          }
+      } catch (error) {
+          setMessage("An unexpected error occurred. Please try again later.");
+      }
     };
 
   return (
@@ -81,30 +107,30 @@ const Home = () => {
       <p className='desc text-center font-semibold'>
         {typedText}
       </p>
-      <button onClick={() => setShowLogin(!showLogin)} className="black_btn">
+      <button onClick={() => setShowLogin(!showLogin)} className="black_btn my-5">
                     Login
                 </button>
                 {showLogin && (
-                    <form className="space-y-4" onSubmit={loginUser}>
-                        <input className="w-full p-2 border rounded" type="text" placeholder="Username" value={username} onChange={e => setUsername(e.target.value)} />
-                        <input className="w-full p-2 border rounded" type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} />
-                        <button type="submit" className="black_btn ">
-                            Submit
-                        </button>
-                    </form>
-                )}
+  <form className="space-y-4 flex flex-col items-center" onSubmit={loginUser}>
+    <input className="w-full p-2 border rounded" type="text" placeholder="Username" value={username} onChange={e => setUsername(e.target.value)} />
+    <input className="w-full p-2 border rounded" type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} />
+    <button type="submit" className="black_btn mb-5">
+      Submit
+    </button>
+  </form>
+)}
                 <button onClick={() => setShowSignup(!showSignup)} className="black_btn">
                     Sign Up
                 </button>
                 {showSignup && (
-                    <form className="space-y-4 mt-2" onSubmit={signupUser}>
-                        <input className="w-full p-2 border rounded" type="text" placeholder="Username" value={username} onChange={e => setUsername(e.target.value)} />
-                        <input className="w-full p-2 border rounded" type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} />
-                        <button type="submit" className="black_btn">
-                            Register
-                        </button>
-                    </form>
-                )}
+    <form className="space-y-4 mt-2 flex flex-col items-center" onSubmit={signupUser}>
+      <input className="w-full p-2 border rounded" type="text" placeholder="Username" value={username} onChange={e => setUsername(e.target.value)} />
+      <input className="w-full p-2 border rounded" type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} />
+      <button type="submit" className="black_btn">
+        Register
+      </button>
+    </form>
+  )}
                 {message && <p className="text-red-500 mt-4">{message}</p>}
     </section>
   );
