@@ -7,7 +7,7 @@ RUN pip install psycopg2
 
 # Copy the script and the assets into the directory
 COPY db/seed.py .
-COPY ../assets ./assets
+COPY ../marketplace/public/assets/images ./assets
 
 # Define the command to run the script
 CMD ["python", "./seed.py"]
