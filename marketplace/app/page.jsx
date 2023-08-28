@@ -71,7 +71,7 @@ const Home = () => {
         <br className='max-md:hidden' />
         <span className='orange_gradient text-center'> Marketplace </span>
       </h1>
-      <p className='desc text-center'>
+      <p className='desc text-center font-semibold'>
         {typedText}
       </p>
       <button onClick={() => setShowLogin(!showLogin)} className="black_btn">

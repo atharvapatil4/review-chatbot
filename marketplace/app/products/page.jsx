@@ -74,12 +74,15 @@ function ReactionModal({ show, onReactionSelected, productId }) {
 
 
 const Products = () => {
+  const targetText = "Click to purchase any item.";
   const [userUUID, setUserUUID] = useState('');
   const [showChat, setShowChat] = useState(false);
   const [products, setProducts] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState(null);
   const [selectedReaction, setSelectedReaction] = useState(null);
+  const [typedText, setTypedText] = useState("");
+  const [charIndex, setCharIndex] = useState(0);
 
   const getBasename = (filepath) => {
     return filepath.split('/').pop();
@@ -98,13 +101,32 @@ const Products = () => {
       .catch(error => console.error("Error fetching products:", error));
   }, []);
 
+  useEffect(() => {
+    // Check if the text has been fully typed out
+    if (charIndex < targetText.length) {
+      // Use a timer to simulate the delay between key presses
+      const timerId = setTimeout(() => {
+        setTypedText((prevTypedText) => prevTypedText + targetText[charIndex]);
+        setCharIndex((prevCharIndex) => prevCharIndex + 1);
+      }, 40); // 150ms delay for each character
+
+      // Clean up the timeout when unmounting or re-rendering
+      return () => clearTimeout(timerId);
+    }
+  }, [charIndex, targetText]);
+
   const handleChatClose = () => {
     setShowChat(false);
   };
 
   return (
     <div>
-      <div>Welcome to the Marketplace! Click to purchase any item.</div>
+      <div className='head_text text-center w-full flex-center flex-col'>
+          Welcome to the <span className='orange_gradient'>Marketplace</span>
+        </div>
+      <p className='desc text-center font-semibold'>
+        {typedText}
+      </p>
       
       {showChat && <ChatBot user_id={userUUID} reaction={selectedReaction} product_id={selectedProductId} onCloseChat={handleChatClose} />}
 
@@ -120,7 +142,7 @@ const Products = () => {
                 setShowModal(true);
               }}
             />
-            <div>{product.product_name}</div>
+            <div style={{ textAlign: 'center' }} >{product.product_name}</div>
           </div>
         ))}
       </div>
