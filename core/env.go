@@ -16,7 +16,7 @@ var (
 func init() {
 	// Init env vars
 	PORT = getEnvOrElse("PORT", "8080")
-	PG_URL = getEnvOrElse("PG_URL", "postgres-service")
+	PG_URL = getEnvOrElse("PG_URL", "localhost")
 	PG_PORT = getEnvOrElse("PG_PORT", "5432")
 	PG_USER = getEnvOrElse("PG_USER", "postgres")
 	PG_NAME = getEnvOrElse("PG_NAME", "postgres")

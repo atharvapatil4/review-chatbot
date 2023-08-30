@@ -1,6 +1,8 @@
 package main
 
-import "time"
+import (
+	"time"
+)
 
 type Product struct {
 	ProductID          string  `json:"product_id"`

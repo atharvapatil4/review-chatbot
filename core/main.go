@@ -28,7 +28,7 @@ func initDB() {
 	psqlInfo := fmt.Sprintf("host=%s port=%s user=%s "+
 		"password=%s dbname=%s sslmode=disable",
 		host, port, user, password, dbname)
-	log.Println("connecting to", psqlInfo)
+	// log.Println("connecting to", psqlInfo)
 	var err error
 	// Open with postgres driver
 	db, err = sql.Open("postgres", psqlInfo)
@@ -43,7 +43,6 @@ func initDB() {
 
 // ******* LOGIN/AUTH HANDLERS ****************//
 func handleLogin(w http.ResponseWriter, r *http.Request) {
-	log.Println("Received request")
 	var loginRequest UserLoginRequest
 
 	// Parse the request body
@@ -138,7 +137,6 @@ func handleBuy(w http.ResponseWriter, r *http.Request) {
 
 // Gets all products from the database, returned as a list
 func getAllProducts(w http.ResponseWriter, r *http.Request) {
-	log.Println("received request to get all products")
 	// Query the database to retrieve all products
 	rows, err := db.Query("SELECT product_id, product_name, product_image_url, product_description, product_cost FROM products")
 	if err != nil {
@@ -167,7 +165,6 @@ func getAllProducts(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log.Println("finished request to get all products", products)
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	w.Write(jsonData)
@@ -199,7 +196,6 @@ func selectPrompt(w http.ResponseWriter, r *http.Request) {
 
 // Receives a text review from a user, and writes it to the REVIEWS table in the db
 func writeReview(w http.ResponseWriter, r *http.Request) {
-	log.Println("Review request received", r.Body)
 	var review Review
 
 	if err := json.NewDecoder(r.Body).Decode(&review); err != nil {

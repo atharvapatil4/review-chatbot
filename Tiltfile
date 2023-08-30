@@ -10,7 +10,7 @@ k8s_yaml('k8s/db-deployment.yaml')
 k8s_yaml('k8s/seed.yaml')
 
 # Set up resources 
-# Note: port forwards are for localhost only, we set up k8s services for cross-pod communication
+# Note: port forwards are for localhost only, we set up k8s servicesconst for cross-pod communication
 k8s_resource('core-server', port_forwards=8080)
 k8s_resource('postgres', port_forwards=5432)
 
